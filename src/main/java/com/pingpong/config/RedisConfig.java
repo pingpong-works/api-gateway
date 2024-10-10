@@ -24,10 +24,10 @@ public class RedisConfig {
      */
     @Bean
     public RedisProperties redisProperties(Environment environment) {
-        String host = environment.getProperty("redis.host");
-        int port = Integer.parseInt(environment.getProperty("redis.port", "6379"));
-        String password = environment.getProperty("redis.password");
-        int database = Integer.parseInt(environment.getProperty("redis.database", "0"));
+        String host = environment.getProperty("spring.redis.host");
+        int port = Integer.parseInt(environment.getProperty("spring.redis.port", "6379"));
+        String password = environment.getProperty("spring.redis.password");
+        int database = Integer.parseInt(environment.getProperty("spring.redis.database", "0"));
 
         return RedisProperties.builder()
                 .host(host)
