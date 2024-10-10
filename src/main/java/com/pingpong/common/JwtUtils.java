@@ -13,6 +13,10 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
+/**
+ * JWT 유틸리티 클래스.
+ * 이 클래스는 JWT 토큰의 검증 및 정보를 추출하는 역할
+ */
 @Component
 public class JwtUtils {
 
@@ -86,5 +90,14 @@ public class JwtUtils {
     public boolean isTokenExpired(String token) {
         Date expiration = getExpirationDateFromToken(token);
         return expiration != null && expiration.before(new Date());
+    }
+
+    /**
+     * JWT 토큰의 유효성 및 만료 여부를 검증
+     * @param token JWT token
+     * @return 토큰이 유효하지 않거나 만료되었으면 true, 유효하면 false 반환
+     */
+    public boolean getValidation(String token) {
+        return !validateToken(token) || isTokenExpired(token);
     }
 }
