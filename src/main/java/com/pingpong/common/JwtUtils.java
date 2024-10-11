@@ -26,7 +26,7 @@ public class JwtUtils {
      * JWT 서명에 사용될 키를 초기화
      * @param secretKey application.yml 에서 주입되는 JWT secret key
      */
-    public JwtUtils(@Value("${ENV_JWT_KEY}") String secretKey) {
+    public JwtUtils(@Value("${jwt.key}") String secretKey) {
         String base64EncodedSecretKey = Encoders.BASE64.encode(secretKey.getBytes(StandardCharsets.UTF_8));
         this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(base64EncodedSecretKey));
     }
