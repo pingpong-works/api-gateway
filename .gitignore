@@ -177,8 +177,7 @@ HELP.md
 
 # application-local.yml
 src/main/resources/application.yml
-src/main/resources/application-dev.yml
-src/main/resources/application-local.yml
+src/test/resources/application-test.yml
 
 # .iml
 server/src/*/*.iml
