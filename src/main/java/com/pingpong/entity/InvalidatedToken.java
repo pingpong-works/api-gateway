@@ -1,9 +1,9 @@
 package com.pingpong.entity;
 
 import lombok.*;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
-import javax.persistence.Id;
 
 import static lombok.AccessLevel.*;
 
