@@ -30,7 +30,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build with Gradle
-        run: ENV_JWT_KEY=${{ secrets.JWT_KEY }}./gradlew build
+        run: ENV_JWT_KEY=${{ secrets.JWT_KEY }} ./gradlew build
 
       - name: Docker build
         run: |
