@@ -26,8 +26,8 @@ public class RouteLocatorConfig {
                         .uri("lb://AUTH-API"))
 
                 // Core Service (8082)
-                .route("core-api", r -> r.path("/cores/**")
-                        .filters(f -> f.rewritePath("/cores/(?<segment>.*)", "/${segment}"))
+                .route("core-api", r -> r.path("/core/**")
+                        .filters(f -> f.rewritePath("/core/(?<segment>.*)", "/${segment}"))
                         .uri("lb://CORE-API"))
 
                 // Mail Service (8083)
@@ -36,18 +36,18 @@ public class RouteLocatorConfig {
                         .uri("lb://MAIL-API"))
 
                 // Util Service (8084)
-                .route("util-api", r -> r.path("/utils/**")
-                        .filters(f -> f.rewritePath("/utils/(?<segment>.*)", "/${segment}"))
+                .route("util-api", r -> r.path("/util/**")
+                        .filters(f -> f.rewritePath("/util/(?<segment>.*)", "/${segment}"))
                         .uri("lb://UTIL-API"))
 
                 // Chat Service (8085)
-                .route("chat-api", r -> r.path("/chats/**")
-                        .filters(f -> f.rewritePath("/chats/(?<segment>.*)", "/${segment}"))
+                .route("chat-api", r -> r.path("/chat/**")
+                        .filters(f -> f.rewritePath("/chat/(?<segment>.*)", "/${segment}"))
                         .uri("lb://CHAT-API"))
 
                 // Alarm Service (8086)
-                .route("alarm-api", r -> r.path("/alarms/**")
-                        .filters(f -> f.rewritePath("/alarms/(?<segment>.*)", "/${segment}"))
+                .route("alarm-api", r -> r.path("/alarm/**")
+                        .filters(f -> f.rewritePath("/alarm/(?<segment>.*)", "/${segment}"))
                         .uri("lb://ALARM-API"))
 
                 // Frontend (5173)
