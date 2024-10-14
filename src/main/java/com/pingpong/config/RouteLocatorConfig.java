@@ -21,7 +21,10 @@ public class RouteLocatorConfig {
     public RouteLocator routeLocator(RouteLocatorBuilder builder, JwtFilter jwtFilter) {
         return builder.routes()
                 // Auth Service (8081)
-                .route("auth-api", r -> r.path("/auth/**")
+                .route("auth-api-public", r -> r.path("/auth/signup", "/auth/login")
+                        .filters(f -> f.rewritePath("/auth/(?<segment>.*)", "/${segment}"))
+                        .uri("lb://AUTH-API"))
+                .route("auth-api-protected", r -> r.path("/auth/**")
                         .filters(f -> f.filter(jwtFilter).rewritePath("/auth/(?<segment>.*)", "/${segment}"))
                         .uri("lb://AUTH-API"))
 
