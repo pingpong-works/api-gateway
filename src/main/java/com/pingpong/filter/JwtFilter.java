@@ -37,25 +37,26 @@ public class JwtFilter implements GatewayFilter {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String url = exchange.getRequest().getURI().getPath();
 
-        // 인가 처리가 필요 없는 경우 필터링
         if (!url.startsWith("/auth/")) {
             return chain.filter(exchange);
         }
 
-        // access 토큰이 필요한데 없는 경우는 에러 발생
-        if (Objects.isNull(exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION))) {
-            throw new BusinessLogicException(ExceptionCode.TOKEN_NOT_EXIST);
+        String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return onError(exchange, "No valid token found", HttpStatus.UNAUTHORIZED);
         }
 
-        String access = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION).trim().split(" ")[1];
+        String token = authHeader.substring(7);
 
-        // token이 서버가 발행한게 맞는지, 혹은 만료되지 않았는지 확인
-        if (jwtUtils.getValidation(access)) {
-            throw new BusinessLogicException(ExceptionCode.TOKEN_NOT_AUTHENTICATED);
+        try {
+            if (!jwtUtils.getValidation(token)) {
+                return onError(exchange, "Invalid token", HttpStatus.UNAUTHORIZED);
+            }
+        } catch (Exception e) {
+            return onError(exchange, "Error validating token: " + e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
 
         // 경로 재작성 Logic
-        // "/auth/serviceName/*/*" -> "/*/*"
         if (url.startsWith("/auth/")) {
             String[] strs = url.split("/");
             String newPath = "/" + String.join("/", Arrays.copyOfRange(strs, 2, strs.length));
@@ -63,12 +64,14 @@ public class JwtFilter implements GatewayFilter {
             return chain.filter(exchange.mutate().request(newRequest).build());
         }
 
-        // 모든 과정들을 만족하지 않는 경우
-        return chain.filter(exchange).then(Mono.defer(() -> {
-            ServerHttpResponse response = exchange.getResponse();
-            response.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
-            DataBuffer buffer = response.bufferFactory().wrap("Not Match Any Conditions.".getBytes(StandardCharsets.UTF_8));
-            return response.writeWith(Mono.just(buffer));
-        }));
+        return chain.filter(exchange);
+    }
+
+    private Mono<Void> onError(ServerWebExchange exchange, String err, HttpStatus httpStatus) {
+        ServerHttpResponse response = exchange.getResponse();
+        response.setStatusCode(httpStatus);
+        response.getHeaders().add("Content-Type", "application/json");
+        DataBuffer buffer = response.bufferFactory().wrap(err.getBytes(StandardCharsets.UTF_8));
+        return response.writeWith(Mono.just(buffer));
     }
 }
