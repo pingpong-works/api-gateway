@@ -21,12 +21,14 @@ public class RouteLocatorConfig {
     public RouteLocator routeLocator(RouteLocatorBuilder builder, JwtFilter jwtFilter) {
         return builder.routes()
                 // Auth Service (8081)
-                .route("auth-api-public", r -> r.path("/auth/signup", "/auth/login")
+                // Auth Service (8081)
+                .route("auth-api-public", r -> r.path("/auth/signup", "/auth/login")  // 공개 경로는 인증 필요 없음
                         .filters(f -> f.rewritePath("/auth/(?<segment>.*)", "/${segment}"))
                         .uri("lb://AUTH-API"))
-                .route("auth-api-protected", r -> r.path("/auth/**")
+                .route("auth-api-protected", r -> r.path("/auth/**")  // 보호 경로에 employees 추가
                         .filters(f -> f.filter(jwtFilter).rewritePath("/auth/(?<segment>.*)", "/${segment}"))
                         .uri("lb://AUTH-API"))
+
 
                 // Core Service (8082)
                 .route("core-api", r -> r.path("/core/**")

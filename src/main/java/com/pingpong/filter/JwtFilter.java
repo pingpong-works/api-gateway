@@ -49,7 +49,7 @@ public class JwtFilter implements GatewayFilter {
         String token = authHeader.substring(7);
 
         try {
-            if (!jwtUtils.getValidation(token)) {
+            if (jwtUtils.getValidation(token)) {
                 return onError(exchange, "Invalid token", HttpStatus.UNAUTHORIZED);
             }
         } catch (Exception e) {
